@@ -37,6 +37,12 @@ namespace Microsoft.Health.Fhir.Core.Features.Operations
 
         public const string Request = "request";
 
+        public const string DestinationType = "destinationType";
+
+        public const string DestinationConnectionString = "destinationConnectionString";
+
+        public const string RequestUri = "requestUri";
+
         public const string Progress = "progress";
 
         public const string Output = "output";
