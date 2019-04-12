@@ -75,7 +75,7 @@ namespace Microsoft.Health.Fhir.Api.Controllers
 
         [HttpGet]
         [Route(KnownRoutes.Export)]
-        [ValidateExportHeadersFilter]
+        [ServiceFilter(typeof(ValidateExportHeadersFilterAttribute))]
         [AuditEventType(AuditEventSubType.Export)]
         public async Task<IActionResult> Export(
             [FromQuery(Name = KnownQueryParameterNames.DestinationType)] string destinationType,
@@ -86,9 +86,7 @@ namespace Microsoft.Health.Fhir.Api.Controllers
                 throw new RequestNotValidException(string.Format(Resources.UnsupportedOperation, OperationsConstants.Export));
             }
 
-            ValidateQueryParamsAndThrowIfInvalid(destinationType, destinationConnectionString);
-
-            CreateExportResponse response = await _mediator.ExportAsync(_fhirRequestContextAccessor.FhirRequestContext.Uri);
+            CreateExportResponse response = await _mediator.ExportAsync(_fhirRequestContextAccessor.FhirRequestContext.Uri, destinationType, destinationConnectionString);
 
             var exportResult = ExportResult.Accepted();
             exportResult.SetContentLocationHeader(_urlResolver, OperationsConstants.Export, response.JobId);
@@ -98,7 +96,7 @@ namespace Microsoft.Health.Fhir.Api.Controllers
 
         [HttpGet]
         [Route(KnownRoutes.ExportResourceType)]
-        [ValidateExportHeadersFilter]
+        [ServiceFilter(typeof(ValidateExportHeadersFilterAttribute))]
         [AuditEventType(AuditEventSubType.Export)]
         public IActionResult ExportResourceType(string type)
         {
@@ -113,7 +111,7 @@ namespace Microsoft.Health.Fhir.Api.Controllers
 
         [HttpGet]
         [Route(KnownRoutes.ExportResourceTypeById)]
-        [ValidateExportHeadersFilter]
+        [ServiceFilter(typeof(ValidateExportHeadersFilterAttribute))]
         [AuditEventType(AuditEventSubType.Export)]
         public IActionResult ExportResourceTypeById(string type, string id)
         {
@@ -161,19 +159,6 @@ namespace Microsoft.Health.Fhir.Api.Controllers
             }
 
             throw new OperationNotImplementedException(string.Format(Resources.OperationNotImplemented, OperationsConstants.Export));
-        }
-
-        private void ValidateQueryParamsAndThrowIfInvalid(string destinationType, string destinationConnectionString)
-        {
-            if (string.IsNullOrWhiteSpace(destinationType) || !string.Equals(destinationType, "AzureBlockBlob", StringComparison.OrdinalIgnoreCase))
-            {
-                throw new RequestNotValidException(string.Format(Resources.UnsupportedParameterValue, KnownQueryParameterNames.DestinationType));
-            }
-
-            if (string.IsNullOrWhiteSpace(destinationConnectionString))
-            {
-                throw new RequestNotValidException(string.Format(Resources.UnsupportedParameterValue, KnownQueryParameterNames.DestinationConnectionString));
-            }
         }
     }
 }

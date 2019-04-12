@@ -22,6 +22,8 @@ namespace Microsoft.Health.Fhir.Core.UnitTests.Features.Export
         private readonly IFhirDataStore _fhirDataStore;
         private readonly IMediator _mediator;
         private const string RequestUrl = "https://localhost/$export/";
+        private const string DestinationType = "destinationType";
+        private const string ConnectionString = "destinationConnection";
 
         public CreateExportRequestHandlerTests()
         {
@@ -40,7 +42,7 @@ namespace Microsoft.Health.Fhir.Core.UnitTests.Features.Export
             var exportOutcome = new ExportJobOutcome(new ExportJobRecord(new Uri(RequestUrl)), WeakETag.FromVersionId("eTag"));
             _fhirDataStore.CreateExportJobAsync(Arg.Any<ExportJobRecord>(), Arg.Any<CancellationToken>()).Returns(exportOutcome);
 
-            var outcome = await _mediator.ExportAsync(new Uri(RequestUrl));
+            var outcome = await _mediator.ExportAsync(new Uri(RequestUrl), DestinationType, ConnectionString);
 
             Assert.NotEmpty(outcome.JobId);
         }
