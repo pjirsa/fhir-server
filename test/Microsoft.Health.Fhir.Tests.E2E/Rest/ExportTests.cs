@@ -56,7 +56,7 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest
         }
 
         [Fact]
-        public async Task WhenRequestingExportWithMissingDestinationConnectionParam_GivenExportIsEnabled_TheServerShouldReturnBadRequest()
+        public async Task GivenExportIsEnabled_WhenRequestingExportWithMissingDestinationConnectionParam_TheServerShouldReturnBadRequest()
         {
             var queryParam = new Dictionary<string, string>()
             {
@@ -70,7 +70,7 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest
         }
 
         [Fact]
-        public async Task WhenRequestingExportWithMissingDestinationTypeParam_GivenExportIsEnabled_TheServerShouldReturnBadRequest()
+        public async Task GivenExportIsEnabled_WhenRequestingExportWithMissingDestinationTypeParam_TheServerShouldReturnBadRequest()
         {
             var queryParam = new Dictionary<string, string>()
             {
@@ -84,7 +84,7 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest
         }
 
         [Fact]
-        public async Task WhenRequestingExportWithUnsupportedDestinationTypeParam_GivenExportIsEnabled_TheServerShouldReturnBadRequest()
+        public async Task GivenExportIsEnabled_WhenRequestingExportWithUnsupportedDestinationTypeParam_TheServerShouldReturnBadRequest()
         {
             var queryParam = new Dictionary<string, string>()
             {
