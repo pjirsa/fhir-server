@@ -12,6 +12,7 @@ using Microsoft.Health.Fhir.Core.Extensions;
 using Microsoft.Health.Fhir.Core.Features.Operations.Export;
 using Microsoft.Health.Fhir.Core.Features.Operations.Export.Models;
 using Microsoft.Health.Fhir.Core.Features.Persistence;
+using Microsoft.Health.Fhir.Core.Features.SecretStore;
 using NSubstitute;
 using Xunit;
 
@@ -20,6 +21,7 @@ namespace Microsoft.Health.Fhir.Core.UnitTests.Features.Export
     public class CreateExportRequestHandlerTests
     {
         private readonly IFhirDataStore _fhirDataStore;
+        private readonly ISecretStore _secretStore;
         private readonly IMediator _mediator;
         private const string RequestUrl = "https://localhost/$export/";
         private const string DestinationType = "destinationType";
@@ -28,9 +30,10 @@ namespace Microsoft.Health.Fhir.Core.UnitTests.Features.Export
         public CreateExportRequestHandlerTests()
         {
             _fhirDataStore = Substitute.For<IFhirDataStore>();
+            _secretStore = Substitute.For<ISecretStore>();
 
             var collection = new ServiceCollection();
-            collection.Add(x => new CreateExportRequestHandler(_fhirDataStore)).Singleton().AsSelf().AsImplementedInterfaces();
+            collection.Add(x => new CreateExportRequestHandler(_fhirDataStore, _secretStore)).Singleton().AsSelf().AsImplementedInterfaces();
 
             ServiceProvider provider = collection.BuildServiceProvider();
             _mediator = new Mediator(type => provider.GetService(type));

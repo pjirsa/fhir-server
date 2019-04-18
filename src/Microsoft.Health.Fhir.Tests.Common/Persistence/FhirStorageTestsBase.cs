@@ -24,6 +24,7 @@ using Microsoft.Health.Fhir.Core.Features.Resources.Create;
 using Microsoft.Health.Fhir.Core.Features.Resources.Delete;
 using Microsoft.Health.Fhir.Core.Features.Resources.Get;
 using Microsoft.Health.Fhir.Core.Features.Resources.Upsert;
+using Microsoft.Health.Fhir.Core.Features.SecretStore;
 using Microsoft.Health.Fhir.Core.Messages.Create;
 using Microsoft.Health.Fhir.Core.Messages.Delete;
 using Microsoft.Health.Fhir.Core.Messages.Export;
@@ -72,13 +73,14 @@ namespace Microsoft.Health.Fhir.Tests.Common.Persistence
                     return new ResourceWrapper(resource, rawResourceFactory.Create(resource), new ResourceRequest("http://fhir", HttpMethod.Post), x.ArgAt<bool>(1), null, null, null);
                 });
 
+            var secretStore = Substitute.For<ISecretStore>();
             var collection = new ServiceCollection();
 
             collection.AddSingleton(typeof(IRequestHandler<CreateResourceRequest, UpsertResourceResponse>), new CreateResourceHandler(dataStore, new Lazy<IConformanceProvider>(() => provider), _resourceWrapperFactory));
             collection.AddSingleton(typeof(IRequestHandler<UpsertResourceRequest, UpsertResourceResponse>), new UpsertResourceHandler(dataStore, new Lazy<IConformanceProvider>(() => provider), _resourceWrapperFactory));
             collection.AddSingleton(typeof(IRequestHandler<GetResourceRequest, GetResourceResponse>), new GetResourceHandler(dataStore, new Lazy<IConformanceProvider>(() => provider), _resourceWrapperFactory, Deserializers.ResourceDeserializer));
             collection.AddSingleton(typeof(IRequestHandler<DeleteResourceRequest, DeleteResourceResponse>), new DeleteResourceHandler(dataStore, new Lazy<IConformanceProvider>(() => provider), _resourceWrapperFactory));
-            collection.AddSingleton(typeof(IRequestHandler<CreateExportRequest, CreateExportResponse>), new CreateExportRequestHandler(dataStore));
+            collection.AddSingleton(typeof(IRequestHandler<CreateExportRequest, CreateExportResponse>), new CreateExportRequestHandler(dataStore, secretStore));
             collection.AddSingleton(typeof(IRequestHandler<GetExportRequest, GetExportResponse>), new GetExportRequestHandler(dataStore));
 
             ServiceProvider services = collection.BuildServiceProvider();
