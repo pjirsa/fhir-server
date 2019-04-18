@@ -27,11 +27,21 @@ namespace Microsoft.Health.Fhir.Api.Features.Filters
         private const string PreferHeaderExpectedValue = "respond-async";
         private readonly List<string> _supportedDestinationTypes;
 
+        // For now we will use a hardcoded list to determine what query parameters we will
+        // allow for export requests. In the future, once we add export and other operations
+        // to the capabilityes statement, we can derive this list from there (via the ConformanceProvider).
+        private readonly List<string> _supportedQueryParams;
+
         public ValidateExportHeadersFilterAttribute(IOptions<OperationsConfiguration> operationsConfig)
         {
             EnsureArg.IsNotNull(operationsConfig?.Value?.Export, nameof(operationsConfig));
 
             _supportedDestinationTypes = operationsConfig.Value.Export.SupportedDestinations;
+            _supportedQueryParams = new List<string>()
+            {
+                KnownQueryParameterNames.DestinationType,
+                KnownQueryParameterNames.DestinationConnectionString,
+            };
         }
 
         public override void OnActionExecuting(ActionExecutingContext context)
@@ -53,6 +63,16 @@ namespace Microsoft.Health.Fhir.Api.Features.Filters
             }
 
             var queryCollection = context.HttpContext.Request.Query;
+
+            // Validate that the request does not contain query parameters that are not supported.
+            foreach (string paramName in queryCollection.Keys)
+            {
+                if (!_supportedQueryParams.Contains(paramName))
+                {
+                    throw new RequestNotValidException(string.Format(Resources.UnsupportedParameter, paramName));
+                }
+            }
+
             if (!queryCollection.ContainsKey(KnownQueryParameterNames.DestinationType)
                || string.IsNullOrWhiteSpace(queryCollection[KnownQueryParameterNames.DestinationType])
                || !_supportedDestinationTypes.Contains(queryCollection[KnownQueryParameterNames.DestinationType]))
@@ -60,7 +80,8 @@ namespace Microsoft.Health.Fhir.Api.Features.Filters
                 throw new RequestNotValidException(string.Format(Resources.UnsupportedParameterValue, KnownQueryParameterNames.DestinationType));
             }
 
-            if (!queryCollection.ContainsKey(KnownQueryParameterNames.DestinationConnectionString) || string.IsNullOrWhiteSpace(queryCollection[KnownQueryParameterNames.DestinationConnectionString]))
+            if (!queryCollection.ContainsKey(KnownQueryParameterNames.DestinationConnectionString)
+                || string.IsNullOrWhiteSpace(queryCollection[KnownQueryParameterNames.DestinationConnectionString]))
             {
                 throw new RequestNotValidException(string.Format(Resources.UnsupportedParameterValue, KnownQueryParameterNames.DestinationConnectionString));
             }

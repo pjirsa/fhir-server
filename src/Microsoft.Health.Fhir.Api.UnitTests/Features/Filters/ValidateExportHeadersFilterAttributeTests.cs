@@ -146,6 +146,25 @@ namespace Microsoft.Health.Fhir.Api.UnitTests.Features.Filters
             Assert.Throws<RequestNotValidException>(() => filter.OnActionExecuting(context));
         }
 
+        [Fact]
+        public void GivenARequestWithCorrectHeadersAndUnSupportedQueryParameter_WhenGettingAnExportOperationRequest_ThenARequestNotValidExceptionShouldBeThrown()
+        {
+            var filter = GetFilter();
+            var queryParams = new Dictionary<string, StringValues>()
+            {
+                { KnownQueryParameterNames.DestinationType, SupportedDestinationType },
+                { KnownQueryParameterNames.DestinationConnectionString, "destination" },
+                { KnownQueryParameterNames.Since, "forever" },
+            };
+
+            var context = CreateContextWithParams(queryParams);
+
+            context.HttpContext.Request.Headers.Add(HeaderNames.Accept, CorrectAcceptHeaderValue);
+            context.HttpContext.Request.Headers.Add(PreferHeaderName, CorrectPreferHeaderValue);
+
+            Assert.Throws<RequestNotValidException>(() => filter.OnActionExecuting(context));
+        }
+
         private static ActionExecutingContext CreateContextWithParams(Dictionary<string, StringValues> queryParams = null)
         {
             var context = new ActionExecutingContext(
