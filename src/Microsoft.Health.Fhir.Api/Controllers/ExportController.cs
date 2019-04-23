@@ -79,7 +79,7 @@ namespace Microsoft.Health.Fhir.Api.Controllers
         [AuditEventType(AuditEventSubType.Export)]
         public async Task<IActionResult> Export(
             [FromQuery(Name = KnownQueryParameterNames.DestinationType)] string destinationType,
-            [FromQuery(Name = KnownQueryParameterNames.DestinationConnectionString)] string destinationConnectionString)
+            [FromQuery(Name = KnownQueryParameterNames.DestinationConnectionSettings)] string destinationConnectionString)
         {
             if (!_exportConfig.Enabled)
             {

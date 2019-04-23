@@ -33,7 +33,7 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest
         [Theory]
         [InlineData("Patient/$export")]
         [InlineData("Group/id/$export")]
-        public async Task GivenExportIsEnabled_WhenRequestingExportWithCorrectHeaders_ThenServerShouldReturnNotImplemented(string path)
+        public async Task GivenExportIsEnabled_WhenRequestingExportWithCorrectHeadersAndParams_ThenServerShouldReturnNotImplemented(string path)
         {
             HttpRequestMessage request = GenerateExportRequest(path);
 
@@ -43,7 +43,7 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest
         }
 
         [Fact]
-        public async Task GivenExportIsEnabled_WhenRequestingExportWithCorrectHeaders_ThenServerShouldReturnAcceptedAndNonEmptyContentLocationHeader()
+        public async Task GivenExportIsEnabled_WhenRequestingExportWithCorrectHeadersAndParams_ThenServerShouldReturnAcceptedAndNonEmptyContentLocationHeader()
         {
             HttpRequestMessage request = GenerateExportRequest();
 
@@ -182,7 +182,7 @@ namespace Microsoft.Health.Fhir.Tests.E2E.Rest
                 queryParams = new Dictionary<string, string>()
                 {
                     { DestinationTypeQueryParamName, SupportedDestinationType },
-                    { DestinationConnectionQueryParamName, "connectionSting" },
+                    { DestinationConnectionQueryParamName, "connectionString" },
                 };
             }
 

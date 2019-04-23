@@ -10,13 +10,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Microsoft.Health.Fhir.Core\Microsoft.Health.Fhir.Core.csproj" />
+    <PackageReference Include="Microsoft.Azure.KeyVault" Version="3.0.3" />
+    <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" Version="1.0.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Microsoft.Azure.KeyVault">
-      <HintPath>C:\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.azure.keyvault\2.3.2\lib\netstandard1.4\Microsoft.Azure.KeyVault.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\Microsoft.Health.Fhir.Core\Microsoft.Health.Fhir.Core.csproj" />
   </ItemGroup>
 
 </Project>

@@ -3,16 +3,10 @@
 // Licensed under the MIT License (MIT). See LICENSE in the repo root for license information.
 // -------------------------------------------------------------------------------------------------
 
-using System.Threading.Tasks;
-
-namespace Microsoft.Health.Fhir.Core.Features.SecretStore
+namespace Microsoft.Health.Fhir.KeyVault.Configs
 {
-    public interface ISecretStore
+    public class KeyVaultConfiguration
     {
-        Task<SecretWrapper> GetSecretAsync(string secretName);
-
-        Task<SecretWrapper> SetSecretAsync(string secretName, string secretValue);
-
-        Task<SecretWrapper> DeleteSecretAsync(string secretName);
+        public string EndPoint { get; set; }
     }
 }

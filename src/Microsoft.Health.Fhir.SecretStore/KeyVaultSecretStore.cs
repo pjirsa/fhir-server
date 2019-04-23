@@ -10,14 +10,14 @@ using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.KeyVault.Models;
 using Microsoft.Health.Fhir.Core.Features.SecretStore;
 
-namespace Microsoft.Health.Fhir.SecretStore
+namespace Microsoft.Health.Fhir.KeyVault
 {
-    public class SecretStore : ISecretStore
+    public class KeyVaultSecretStore : ISecretStore
     {
         private IKeyVaultClient _keyVaultClient;
         private Uri _keyVaultUri;
 
-        public SecretStore(IKeyVaultClient keyVaultClient, Uri keyVaultUri)
+        public KeyVaultSecretStore(IKeyVaultClient keyVaultClient, Uri keyVaultUri)
         {
             EnsureArg.IsNotNull(keyVaultClient, nameof(keyVaultClient));
             EnsureArg.IsNotNull(keyVaultUri, nameof(keyVaultUri));
@@ -26,30 +26,32 @@ namespace Microsoft.Health.Fhir.SecretStore
             _keyVaultUri = keyVaultUri;
         }
 
-        public async Task<string> GetSecret(string secretName)
+        public async Task<SecretWrapper> GetSecretAsync(string secretName)
         {
             EnsureArg.IsNotNullOrWhiteSpace(secretName);
 
             SecretBundle result = await _keyVaultClient.GetSecretAsync(_keyVaultUri.AbsoluteUri, secretName);
-            return result.Value;
+
+            return new SecretWrapper(result.Id, result.Value);
         }
 
-        public async Task<bool> SetSecret(string secretName, string secretValue)
+        public async Task<SecretWrapper> SetSecretAsync(string secretName, string secretValue)
         {
             EnsureArg.IsNotNullOrWhiteSpace(secretName, nameof(secretName));
             EnsureArg.IsNotNullOrWhiteSpace(secretValue, nameof(secretValue));
 
             SecretBundle result = await _keyVaultClient.SetSecretAsync(_keyVaultUri.AbsoluteUri, secretName, secretValue);
 
-            return true;
+            return new SecretWrapper(result.Id, result.Value);
         }
 
-        public async Task<bool> DeleteSecret(string secretName)
+        public async Task<SecretWrapper> DeleteSecretAsync(string secretName)
         {
             EnsureArg.IsNotNullOrWhiteSpace(secretName, nameof(secretName));
 
             SecretBundle result = await _keyVaultClient.DeleteSecretAsync(_keyVaultUri.AbsoluteUri, secretName);
-            return true;
+
+            return new SecretWrapper(result.Id, result.Value);
         }
     }
 }

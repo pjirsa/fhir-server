@@ -100,7 +100,7 @@ namespace Microsoft.Health.Fhir.Api.UnitTests.Features.Filters
             var filter = GetFilter();
             var queryParams = new Dictionary<string, StringValues>()
             {
-                { KnownQueryParameterNames.DestinationConnectionString, "destination" },
+                { KnownQueryParameterNames.DestinationConnectionSettings, "destination" },
             };
 
             var context = CreateContextWithParams(queryParams);
@@ -135,7 +135,7 @@ namespace Microsoft.Health.Fhir.Api.UnitTests.Features.Filters
             var queryParams = new Dictionary<string, StringValues>()
             {
                 { KnownQueryParameterNames.DestinationType, "Azure" },
-                { KnownQueryParameterNames.DestinationConnectionString, "destination" },
+                { KnownQueryParameterNames.DestinationConnectionSettings, "destination" },
             };
 
             var context = CreateContextWithParams(queryParams);
@@ -147,13 +147,13 @@ namespace Microsoft.Health.Fhir.Api.UnitTests.Features.Filters
         }
 
         [Fact]
-        public void GivenARequestWithCorrectHeadersAndUnSupportedQueryParameter_WhenGettingAnExportOperationRequest_ThenARequestNotValidExceptionShouldBeThrown()
+        public void GivenARequestWithCorrectHeadersAndUnsupportedQueryParameter_WhenGettingAnExportOperationRequest_ThenARequestNotValidExceptionShouldBeThrown()
         {
             var filter = GetFilter();
             var queryParams = new Dictionary<string, StringValues>()
             {
                 { KnownQueryParameterNames.DestinationType, SupportedDestinationType },
-                { KnownQueryParameterNames.DestinationConnectionString, "destination" },
+                { KnownQueryParameterNames.DestinationConnectionSettings, "destination" },
                 { KnownQueryParameterNames.Since, "forever" },
             };
 
@@ -177,7 +177,7 @@ namespace Microsoft.Health.Fhir.Api.UnitTests.Features.Filters
             {
                 queryParams = new Dictionary<string, StringValues>();
                 queryParams.Add(KnownQueryParameterNames.DestinationType, SupportedDestinationType);
-                queryParams.Add(KnownQueryParameterNames.DestinationConnectionString, "connectionString");
+                queryParams.Add(KnownQueryParameterNames.DestinationConnectionSettings, "connectionString");
             }
 
             context.HttpContext.Request.Query = new QueryCollection(queryParams);

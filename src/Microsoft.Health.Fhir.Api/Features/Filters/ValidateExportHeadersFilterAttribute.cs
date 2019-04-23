@@ -29,7 +29,7 @@ namespace Microsoft.Health.Fhir.Api.Features.Filters
 
         // For now we will use a hardcoded list to determine what query parameters we will
         // allow for export requests. In the future, once we add export and other operations
-        // to the capabilityes statement, we can derive this list from there (via the ConformanceProvider).
+        // to the capabilities statement, we can derive this list from there (via the ConformanceProvider).
         private readonly List<string> _supportedQueryParams;
 
         public ValidateExportHeadersFilterAttribute(IOptions<OperationsConfiguration> operationsConfig)
@@ -40,7 +40,7 @@ namespace Microsoft.Health.Fhir.Api.Features.Filters
             _supportedQueryParams = new List<string>()
             {
                 KnownQueryParameterNames.DestinationType,
-                KnownQueryParameterNames.DestinationConnectionString,
+                KnownQueryParameterNames.DestinationConnectionSettings,
             };
         }
 
@@ -80,10 +80,10 @@ namespace Microsoft.Health.Fhir.Api.Features.Filters
                 throw new RequestNotValidException(string.Format(Resources.UnsupportedParameterValue, KnownQueryParameterNames.DestinationType));
             }
 
-            if (!queryCollection.ContainsKey(KnownQueryParameterNames.DestinationConnectionString)
-                || string.IsNullOrWhiteSpace(queryCollection[KnownQueryParameterNames.DestinationConnectionString]))
+            if (!queryCollection.ContainsKey(KnownQueryParameterNames.DestinationConnectionSettings)
+                || string.IsNullOrWhiteSpace(queryCollection[KnownQueryParameterNames.DestinationConnectionSettings]))
             {
-                throw new RequestNotValidException(string.Format(Resources.UnsupportedParameterValue, KnownQueryParameterNames.DestinationConnectionString));
+                throw new RequestNotValidException(string.Format(Resources.UnsupportedParameterValue, KnownQueryParameterNames.DestinationConnectionSettings));
             }
         }
     }

@@ -392,7 +392,7 @@ namespace Microsoft.Health.Fhir.Tests.Common.Persistence
         public async Task GivenANewExportRequest_WhenCreatingExportJob_ThenGetsJobCreated()
         {
             var requestUri = new Uri("https://localhost/$export");
-            CreateExportResponse result = await Mediator.ExportAsync(requestUri);
+            CreateExportResponse result = await Mediator.ExportAsync(requestUri, "destinationType", "connectionString");
 
             Assert.NotEmpty(result.JobId);
         }
